@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
+	"sort"
 )
 
 type iterationResult struct {
-	votes uint
+	voteCount uint
 	candidate string
 }
 
@@ -25,11 +26,41 @@ func countWinningVotes(voters []voter) (candidateToVoteCount map[string]uint) {
 }
 
 
+func sortIterationResults(candidateToVoteCount map[string]uint) (sortedResults []iterationResult) {
+	for candidate, voteCount := range(candidateToVoteCount) {
+		sortedResults = append(
+			sortedResults,
+			iterationResult{
+				candidate: candidate,
+				voteCount: voteCount,
+			},
+		)
+	}
+
+	// Sort on candidate name to make results consistent regardless of map iteration order.
+	sort.SliceStable(sortedResults, func(i, j int) bool {
+		return sortedResults[i].candidate < sortedResults[j].candidate
+	})
+	// Sort by actual vote count.
+	sort.SliceStable(sortedResults, func(i, j int) bool {
+		return sortedResults[i].voteCount < sortedResults[j].voteCount
+	})
+
+	return sortedResults
+}
 
 
 // TODO add a verbose flag to print everything?
 func computeInstantRunoffWinner(voters []voter) (winningCandidate string, err error) {
 	candidateToVoteCount := countWinningVotes(voters)
+
+	sortedResults := sortIterationResults(candidateToVoteCount)
+	fmt.Println(sortedResults)
+
+	// TODO check if we have a majority on the winner.
+	// TODO what if there is more than one?
+	// TODO return the winner(s) if so.
+	// TODO determine losers, eliminate them, and iterate if not.
 
 	// TODO Determine how to determine this.
 	losingCandidate := "IMPLEMENT ME"
