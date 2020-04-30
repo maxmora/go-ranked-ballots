@@ -81,7 +81,7 @@ func validateCSVRecords(csvRecords [][]string) (err error) {
 }
 
 
-// TODO this needs to first 
+// TODO this needs to first
 // TODO add a verbose flag to print everything?
 func computeInstatRunoffWinner(csvRecords [][]string) (winningCandidate string, err error) {
 	panic("FIXME: computeInstatRunoffWinner; not implemented!")
