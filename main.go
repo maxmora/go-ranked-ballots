@@ -10,7 +10,8 @@ import (
 // TODO read CSV data from a file.
 var csvData string = `"Timestamp","Votes [The Blues Brothers (1980)]","Votes [Flight of the Navigator (1986)]","Votes [Ralph Breaks the Internet (2018)]","Votes [Premium Rush (2012)]","Votes [Galaxy Quest (1999)]","Votes [Mystery Men (1999)]"
 "2020/04/29 7:23:51 PM AST","1","2","3","","",""
-"2020/04/29 7:24:00 PM AST","","3","","","2","1"`
+"2020/04/29 7:24:00 PM AST","","3","","","2","1"
+"2020/04/29 7:25:00 PM AST","","3","","2","","1"`
 
 
 type voter struct {
@@ -40,7 +41,6 @@ func tabulateVoters(csvRecords [][]string, possibleRankings []string) (voters []
 
 	// Just the candidates (CSV headers excluding the first column, which is "Timestamp").
 	candidates := csvRecords[0][1:]
-	fmt.Println(candidates)
 
 	for _, voterSlice := range(csvRecords[1:]) {
 		fmt.Println(voterSlice)
@@ -81,15 +81,6 @@ func validateCSVRecords(csvRecords [][]string) (err error) {
 }
 
 
-// TODO this needs to first
-// TODO add a verbose flag to print everything?
-func computeInstatRunoffWinner(csvRecords [][]string) (winningCandidate string, err error) {
-	panic("FIXME: computeInstatRunoffWinner; not implemented!")
-	return
-}
-
-
-
 func main() {
 	// TODO make this something you can pass in by command line flag?
 	possibleRankings := []string{"1", "2", "3"}
@@ -105,7 +96,6 @@ func main() {
 		panic(err)
 	}
 
-	// TODO call computeInstatRunoffWinner
+	_, _ = computeInstantRunoffWinner(voters)
 
-	fmt.Println(voters)
 }
