@@ -99,7 +99,6 @@ func main() {
 	if err != nil {
 		panic("Could not read CSV file: "+err.Error())
 	}
-	fmt.Println(fileContents)
 
 	// TODO make this something you can pass in by command line flag?
 	possibleRankings := []string{"1", "2", "3"}
