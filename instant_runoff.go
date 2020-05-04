@@ -66,7 +66,7 @@ func computeInstantRunoffWinner(voters []voter) (winningCandidates []string, err
 	numCandidates := countCandidates(voters)
 
 	// We should never need to do more iterations than there are candidates to consider.
-	for iterationNumber := 1; iterationNumber < numCandidates; iterationNumber++ {
+	for iterationNumber := 1; iterationNumber < numCandidates+1; iterationNumber++ {
 		candidateToVoteCount := countWinningVotes(voters)
 		sortedResults := sortIterationResults(candidateToVoteCount)
 
@@ -114,19 +114,18 @@ func computeInstantRunoffWinner(voters []voter) (winningCandidates []string, err
 			losingCandidate := worstCandidates[rand.Intn(len(worstCandidates))].candidate
 			fmt.Printf("Randomly selected candidate to eliminate: %s\n", losingCandidate)
 
-			// Eliminate losing candidate.
+			// Eliminate losing candidate from all voters.
 			for i, _ := range(voters) {
-				// Check if there are any candidates left to count from this voter.
-				if len(voters[i].votes) < 1 {
-					continue
+				var filteredVotes []string
+				for _, candidate := range(voters[i].votes) {
+					if candidate != losingCandidate {
+						filteredVotes = append(filteredVotes, candidate)
+					}
 				}
-
-				if voters[i].votes[0] == losingCandidate {
-					// We have to do this slice manipulation on voters[i] because that rewrites
-					// the actual in the slice. If we range over `_, v` and rewrite the loop
-					// variable's `v.votes`, it won't mutate the actual voter.
-					voters[i].votes = voters[i].votes[1:]
-				}
+				// We have to do this slice manipulation on voters[i] because that rewrites
+				// the actual in the slice. If we range over `_, v` and rewrite the loop
+				// variable's `v.votes`, it won't mutate the actual voter.
+				voters[i].votes = filteredVotes
 			}
 		}
 	}
