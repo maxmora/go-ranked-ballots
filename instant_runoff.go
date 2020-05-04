@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"sort"
 )
 
@@ -50,8 +51,9 @@ func sortIterationResults(candidateToVoteCount map[string]uint) (sortedResults [
 }
 
 
-// TODO add a verbose flag to print everything?
 func computeInstantRunoffWinner(voters []voter) (winningCandidates []string, err error) {
+	// TODO FIXME do the whole appropriate bit in a loop.
+
 	candidateToVoteCount := countWinningVotes(voters)
 	sortedResults := sortIterationResults(candidateToVoteCount)
 
@@ -87,34 +89,33 @@ func computeInstantRunoffWinner(voters []voter) (winningCandidates []string, err
 	} else {
 		fmt.Printf("%d votes is not a simple majority of %d voters; beginning next iteration.\n", maxFirstChoiceVotes, len(voters))
 		// TODO then we go to the next iteration.
-	}
-
-
-	// TODO check if we have a majority on the winner.
-	// TODO what if there is more than one?
-	// TODO return the winner(s) if so. just do it randomly. that's valid.
-	// TODO determine losers, eliminate them, and iterate if not. just do it randomly. that's valid.
-
-	// TODO Determine how to determine this.
-	losingCandidate := "IMPLEMENT ME"
-
-	// Eliminate losing candidates.
-	for i, _ := range(voters) {
-		// Check if there are any candidates left to count from this voter.
-		if len(voters[i].votes) < 1 {
-			continue
+		// TODO pick one of the losers at random to eliminate, elimiate it from all
+		// voters for which it was the top candidate, and continue to the next iteration.
+		fmt.Println("The candidate(s) with the least first choice votes is/are:")
+		for _, sr := range(worstCandidates) {
+			fmt.Printf("\t%s: %d\n", sr.candidate, sr.voteCount)
 		}
+		if len(worstCandidates) < 1 {
+			panic("No losing candidates. This doesn't make sense.")
+		}
+		losingCandidate := worstCandidates[rand.Intn(len(worstCandidates))].candidate
+		fmt.Printf("Randomly selected candidate to eliminate: %s\n", losingCandidate)
 
-		// FIXME this may have to eliminate more than one, depending on tie-breaking rules.
-		if voters[i].votes[0] == losingCandidate {
-			// We have to do this slice manipulation on voters[i] because that rewrites
-			// the actual in the slice. If we range over `_, v` and rewrite the loop
-			// variable's `v.votes`, it won't mutate the actual voter.
-			voters[i].votes = voters[i].votes[1:]
+		// Eliminate losing candidate.
+		for i, _ := range(voters) {
+			// Check if there are any candidates left to count from this voter.
+			if len(voters[i].votes) < 1 {
+				continue
+			}
+
+			if voters[i].votes[0] == losingCandidate {
+				// We have to do this slice manipulation on voters[i] because that rewrites
+				// the actual in the slice. If we range over `_, v` and rewrite the loop
+				// variable's `v.votes`, it won't mutate the actual voter.
+				voters[i].votes = voters[i].votes[1:]
+			}
 		}
 	}
-	// TODO then iterate and slice off losing candidates
-	// TODO determine how to determine that!
 
 	return []string{}, fmt.Errorf("Something went wrong.")
 }
