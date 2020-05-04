@@ -93,7 +93,7 @@ func computeInstantRunoffWinner(voters []voter) (winningCandidates []string, err
 		for _, sr := range(bestCandidates) {
 			fmt.Printf("\t%s: %d\n", sr.candidate, sr.voteCount)
 		}
-		if float64(maxFirstChoiceVotes) > float64(len(voters)) {
+		if float64(maxFirstChoiceVotes) > float64(len(voters))/2 {
 			fmt.Printf("%d votes is a simple majority of %d voters, so we have (a) winner(s).\n", maxFirstChoiceVotes, len(voters))
 			for _, res := range(bestCandidates) {
 				winningCandidates = append(winningCandidates, res.candidate)
