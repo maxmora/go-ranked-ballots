@@ -3,36 +3,11 @@ package main
 import (
 	"encoding/csv"
 	"errors"
+	"flag"
 	"fmt"
+	"io/ioutil"
 	"strings"
 )
-
-// TODO read CSV data from a file.
-var csvData string = `"Timestamp","Votes [The Blues Brothers (1980)]","Votes [Flight of the Navigator (1986)]","Votes [Ralph Breaks the Internet (2018)]","Votes [Premium Rush (2012)]","Votes [Galaxy Quest (1999)]","Votes [Mystery Men (1999)]"
-"2020/04/30 3:49:20 PM AST","","","1","3","2",""
-"2020/04/30 3:54:29 PM AST","1","3","","","2",""
-"2020/04/30 3:57:57 PM AST","","","3","","2","1"
-"2020/04/30 4:00:30 PM AST","2","","","3","","1"
-"2020/04/30 4:01:56 PM AST","","1","","3","","2"
-"2020/04/30 4:04:50 PM AST","1","","2","","3",""
-"2020/04/30 4:12:37 PM AST","","3","","2","1",""
-"2020/04/30 4:15:43 PM AST","","3","2","1","",""
-"2020/04/30 4:34:57 PM AST","2","","","3","1",""
-"2020/04/30 5:05:31 PM AST","3","","","","1","2"
-"2020/04/30 5:40:05 PM AST","3","","","","2","1"
-"2020/04/30 6:05:14 PM AST","","","","2","3","1"
-"2020/04/30 6:32:39 PM AST","","3","","2","1",""
-"2020/04/30 6:39:38 PM AST","3","1","2","","",""
-"2020/04/30 6:43:14 PM AST","1","","2","","3",""
-"2020/04/30 7:15:05 PM AST","2","3","","","1",""
-"2020/04/30 7:20:58 PM AST","","","","2;3","1",""
-"2020/04/30 8:23:45 PM AST","","3","","2","1",""
-"2020/04/30 8:25:32 PM AST","","1;2;3","","","",""
-"2020/04/30 10:02:33 PM AST","1","","","","2","3"
-"2020/05/01 6:01:21 AM AST","2","","","3","","1"
-"2020/05/03 4:50:55 AM AST","","","","","2","1"
-"2020/05/03 12:16:49 PM AST","","2","1","3","",""
-"2020/05/03 8:26:18 PM AST","1","3","","","","2"`
 
 
 type voter struct {
@@ -117,10 +92,19 @@ func validateCSVRecords(csvRecords [][]string) (err error) {
 
 
 func main() {
+	csvFileName := flag.String("csv-file", "", "CSV file from which to determine winner.")
+	flag.Parse()
+
+	fileContents, err := ioutil.ReadFile(*csvFileName)
+	if err != nil {
+		panic("Could not read CSV file: "+err.Error())
+	}
+	fmt.Println(fileContents)
+
 	// TODO make this something you can pass in by command line flag?
 	possibleRankings := []string{"1", "2", "3"}
 
-	r := csv.NewReader(strings.NewReader(csvData))
+	r := csv.NewReader(strings.NewReader(string(fileContents)))
 	csvRecords, err := r.ReadAll()
 	if err != nil {
 		panic(err)
