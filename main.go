@@ -80,8 +80,6 @@ func tabulateVoters(csvRecords [][]string, possibleRankings []string) (voters []
 	candidates := csvRecords[0][1:]
 
 	for _, voterSlice := range(csvRecords[1:]) {
-		fmt.Println(voterSlice)
-
 		// for each possible ranking (best to worst), get its index and use that to grab the candidate
 		// append the candidate to a slice.
 		var votesBestToWorst []string
@@ -133,6 +131,12 @@ func main() {
 		panic(err)
 	}
 
-	_, _ = computeInstantRunoffWinner(voters)
-
+	winningCandidates, err := computeInstantRunoffWinner(voters)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Winner(s):")
+	for _, wc := range(winningCandidates) {
+		fmt.Printf("\t%s\n", wc)
+	}
 }

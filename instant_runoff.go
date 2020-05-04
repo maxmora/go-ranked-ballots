@@ -51,11 +51,44 @@ func sortIterationResults(candidateToVoteCount map[string]uint) (sortedResults [
 
 
 // TODO add a verbose flag to print everything?
-func computeInstantRunoffWinner(voters []voter) (winningCandidate string, err error) {
+func computeInstantRunoffWinner(voters []voter) (winningCandidates []string, err error) {
 	candidateToVoteCount := countWinningVotes(voters)
-
 	sortedResults := sortIterationResults(candidateToVoteCount)
-	fmt.Println(sortedResults)
+
+	fmt.Println("Results of iteration 1:")
+	for _, sr := range(sortedResults) {
+		fmt.Printf("\t%s: %d\n", sr.candidate, sr.voteCount)
+	}
+
+	// Collect all candidate(s) with the most and least votes first choice votes.
+	minFirstChoiceVotes := sortedResults[0].voteCount
+	maxFirstChoiceVotes := sortedResults[len(sortedResults)-1].voteCount
+	var worstCandidates []iterationResult
+	var bestCandidates []iterationResult
+	for _, res := range(sortedResults) {
+		if res.voteCount == minFirstChoiceVotes {
+			worstCandidates = append(worstCandidates, res)
+		}
+		if res.voteCount == maxFirstChoiceVotes {
+			bestCandidates = append(bestCandidates, res)
+		}
+	}
+
+	fmt.Println("The winner(s) is/are:")
+	for _, sr := range(bestCandidates) {
+		fmt.Printf("\t%s: %d\n", sr.candidate, sr.voteCount)
+	}
+	if float64(maxFirstChoiceVotes) > float64(len(voters)) {
+		fmt.Printf("%d votes is a simple majority of %d voters, so we have (a) winner(s).\n", maxFirstChoiceVotes, len(voters))
+		for _, res := range(bestCandidates) {
+			winningCandidates = append(winningCandidates, res.candidate)
+		}
+		return winningCandidates, nil
+	} else {
+		fmt.Printf("%d votes is not a simple majority of %d voters; beginning next iteration.\n", maxFirstChoiceVotes, len(voters))
+		// TODO then we go to the next iteration.
+	}
+
 
 	// TODO check if we have a majority on the winner.
 	// TODO what if there is more than one?
@@ -82,7 +115,7 @@ func computeInstantRunoffWinner(voters []voter) (winningCandidate string, err er
 	}
 	// TODO then iterate and slice off losing candidates
 	// TODO determine how to determine that!
-	fmt.Println(candidateToVoteCount)
-	return
+
+	return []string{}, fmt.Errorf("Something went wrong.")
 }
 
