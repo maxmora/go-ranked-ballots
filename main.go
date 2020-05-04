@@ -42,10 +42,26 @@ type voter struct {
 }
 
 
-// indexStringSlice returns the index of the first instance of str in strSlice. -1 if str is not found.
-func indexStringSlice(strSlice []string, str string) (pos int) {
-	for i, s := range(strSlice) {
-		if s == str {
+// indexOfRankingInVoteSlice returns the index of the first instance of ranking
+// in voteSlice. -1 if ranking is not found.
+//
+// In output CSVs, multiple rankings can be given to the same candidate. When
+// that occurs, the rankings are semicolon-separated, e.g., a candidate with
+// just a 1 will have a vote "1", but a candidate with rankings 1 and 2 will
+// have "1;2".
+//
+// To handle this, we split vote fields on semicolons and only consider the
+// first (i.e., the highest) ranking for that candidate. In this way, a
+// candidate can only get a single vote, and it will only count when we check
+// for the highgest ranking that it has a vote for.
+func indexOfRankingInVoteSlice(voteSlice []string, ranking string) (pos int) {
+	for i, s := range(voteSlice) {
+		if s == ranking {
+			return i
+		}
+
+		voteParts := strings.Split(s, ";")
+		if (len(voteParts) > 0) && (voteParts[0] == ranking) {
 			return i
 		}
 	}
@@ -72,7 +88,7 @@ func tabulateVoters(csvRecords [][]string, possibleRankings []string) (voters []
 		for _, ranking := range(possibleRankings) {
 			// Get the offset (ignoring the timestamp field) of the candidate that this
 			// ranked vote corresponds to.
-			candidateIdx := indexStringSlice(voterSlice[1:], ranking)
+			candidateIdx := indexOfRankingInVoteSlice(voterSlice[1:], ranking)
 			if candidateIdx == -1 {
 				continue
 			}
