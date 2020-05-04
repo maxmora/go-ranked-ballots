@@ -59,8 +59,8 @@ func computeInstantRunoffWinner(voters []voter) (winningCandidate string, err er
 
 	// TODO check if we have a majority on the winner.
 	// TODO what if there is more than one?
-	// TODO return the winner(s) if so.
-	// TODO determine losers, eliminate them, and iterate if not.
+	// TODO return the winner(s) if so. just do it randomly. that's valid.
+	// TODO determine losers, eliminate them, and iterate if not. just do it randomly. that's valid.
 
 	// TODO Determine how to determine this.
 	losingCandidate := "IMPLEMENT ME"
