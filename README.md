@@ -11,4 +11,14 @@
 
 # Usage
 
-TODO: Explain how to build and use the CLI.
+First, download a CSV of the responses to your Google form by going to "Responses",
+then clicking on the "..." and selecting "Download responses (.csv)".
+
+Then run the tabulator on the file:
+
+```
+# With `go run`
+$ go run *.go --csv-file RESPONSES_CSV_FILE
+```
+
+TODO: Explain how to pass in the possible rakings (but this is not yet implemented).
