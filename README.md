@@ -18,7 +18,8 @@ Then run the tabulator on the file:
 
 ```
 # With `go run`
-$ go run *.go --csv-file RESPONSES_CSV_FILE
+$ go run *.go --possible-rankings COMMA_SEPARATED_RANKINGS --csv-file RESPONSES_CSV_FILE
 ```
 
-TODO: Explain how to pass in the possible rakings (but this is not yet implemented).
+If the possible rankings are `1`, `2`, and `3`, for example, then the value of
+`COMMA_SEPARATED_RANKINGS` should be `1,2,3`.

@@ -93,6 +93,7 @@ func validateCSVRecords(csvRecords [][]string) (err error) {
 
 func main() {
 	csvFileName := flag.String("csv-file", "", "CSV file from which to determine winner.")
+	possibleRankingsString := flag.String("possible-rankings", "", "Comma-separated list of possible candidate rankings (e.g., \"1,2,3\").")
 	flag.Parse()
 
 	fileContents, err := ioutil.ReadFile(*csvFileName)
@@ -100,8 +101,10 @@ func main() {
 		panic("Could not read CSV file: "+err.Error())
 	}
 
-	// TODO make this something you can pass in by command line flag?
-	possibleRankings := []string{"1", "2", "3"}
+	if *possibleRankingsString == "" {
+		panic("Flag --possible-rankings must be set in order to run.")
+	}
+	possibleRankings := strings.Split(*possibleRankingsString, ",")
 
 	r := csv.NewReader(strings.NewReader(string(fileContents)))
 	csvRecords, err := r.ReadAll()
