@@ -100,6 +100,7 @@ func computeInstantRunoffWinner(voters []voter) (winningCandidates []string, err
 			}
 			return winningCandidates, nil
 		} else {
+			fmt.Printf("\n")
 			fmt.Printf("%d votes is not a simple majority of %d voters; beginning next iteration.\n", maxFirstChoiceVotes, len(voters))
 
 			fmt.Println("The candidate(s) with the least first choice votes is/are:")
