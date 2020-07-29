@@ -51,6 +51,11 @@ func tabulateVoters(csvRecords [][]string, possibleRankings []string) (voters []
 		return []voter{}, err
 	}
 
+	rankingSet := map[string]bool{}
+	for _, r := range(possibleRankings) {
+		rankingSet[r] = true
+	}
+
 	// Just the candidates (CSV headers excluding the first column, which is "Timestamp").
 	candidates := csvRecords[0][1:]
 
@@ -59,6 +64,10 @@ func tabulateVoters(csvRecords [][]string, possibleRankings []string) (voters []
 		// append the candidate to a slice.
 		var votesBestToWorst []string
 		for _, ranking := range(possibleRankings) {
+			_, ok := rankingSet[ranking]
+			if !ok {
+				panic("Unknown ranking: "+ranking)
+			}
 			// Get the offset (ignoring the timestamp field) of the candidate that this
 			// ranked vote corresponds to.
 			candidateIdx := indexOfRankingInVoteSlice(voterSlice[1:], ranking)
